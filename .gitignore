@@ -2,3 +2,7 @@
 .env.*.php
 .env.php
 .env
+/vendor
+.directory
+.idea
+composer.lock

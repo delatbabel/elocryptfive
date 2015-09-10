@@ -1,0 +1,26 @@
+{
+    "name": "delatbabel/elocryptfive",
+    "description": "Automatically encrypt and decrypt Eloquent attributes with ease.",
+    "keywords": ["encrypt", "elocrypt", "eloquent", "l5", "laravel", "laravel5", "encryption", "eloquent encryption", "laravel5 encryption", "laravel5 aes", "eloquent aes"],
+    "authors": [
+        {
+            "name": "Del",
+            "email": "del@babel.com.au"
+        },
+        {
+            "name": "Darren Taylor",
+            "email": "shout@darrenonthe.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/contracts": "5.1.*",
+        "illuminate/support": "5.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Delatbabel\\Elocrypt\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
