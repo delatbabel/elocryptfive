@@ -52,6 +52,22 @@ For example:
     }
 ```
 
+You can combine `$casts` and `$encryptable` to store encrypted arrays.  An array will first be
+converted to JSON and then encrypted.  For example:
+
+```php
+    use Delatbabel\Elocrypt\Elocrypt;
+
+    class User extends Eloquent {
+
+        use Elocrypt;
+
+        public $casts = ['extended_data' => 'array'];
+
+        public $encryptable = ['extended_data'];
+    }
+```
+
 # How it Works?
 
 By including the Elocrypt trait, the setAttribute() and getAttributeFromArray() methods provided
