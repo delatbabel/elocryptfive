@@ -9,7 +9,7 @@ use Illuminate\Contracts\Encryption\EncryptException;
 use Illuminate\Support\Facades\Crypt;
 
 /**
- * Class Elocrypt
+ * Trait Elocrypt
  *
  * Automatically encrypt and decrypt Laravel 5 Eloquent values
  *
