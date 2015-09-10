@@ -1,4 +1,4 @@
-# elocryptfive
+# Eloquent Encryption/Decryption for Laravel 5
 
 Automatically encrypt and decrypt Laravel 5 Eloquent values
 
