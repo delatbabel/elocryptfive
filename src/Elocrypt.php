@@ -34,13 +34,13 @@ use Illuminate\Support\Facades\Crypt;
  * @see  ...
  * @link ...
  */
-trait Elocrypt {
+trait Elocrypt
+{
 
     // TRAITS CAN'T HAVE CONSTANTS! GAH!
     // const CRYPT_TAG = '__ELOCRYPT__:';
 
     protected $elocrypt_prefix = '__ELOCRYPT__:';
-
 
     /**
      * Determine whether an attribute should be encrypted.
