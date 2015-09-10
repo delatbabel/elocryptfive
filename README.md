@@ -24,6 +24,8 @@ to Encrypt.
 
 For example:
 
+    use Delatbabel\Elocrypt\Elocrypt;
+
     class User extends Eloquent {
 
         use Elocrypt;
