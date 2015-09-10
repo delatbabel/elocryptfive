@@ -50,7 +50,7 @@ trait Elocrypt {
      */
     protected function hasEncrypt($key)
     {
-        return array_key_exists($key, $this->encryptable);
+        return in_array($key, $this->encryptable);
     }
 
     /**
