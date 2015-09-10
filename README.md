@@ -14,6 +14,8 @@ following additions/changes:
   so that plain text data can be detected and handled correctly.  The task of writing a script
   to traverse your existing database and update all plain text data to encrypted data is left
   to the reader.
+  
+The original Laravel 4 package is here: https://github.com/dtisgodsson/elocrypt
 
 # Installation
 
