@@ -33,9 +33,10 @@ For example:
 
 # How it Works?
 
-By including the Elocrypt trait, the setAttribute() and getAttribute() methods provided by Eloquent are overridden
-to include an additional step. This additional step simply checks whether the attribute being
-set or get is included in the "encryptable" array on the model, and either encrypts/decrypts it accordingly.
+By including the Elocrypt trait, the setAttribute() and getAttributeFromArray() methods provided
+by Eloquent are overridden to include an additional step. This additional step simply checks
+whether the attribute being set or get is included in the "encryptable" array on the model,
+and either encrypts/decrypts it accordingly.
 
 # Keys and IVs
 
