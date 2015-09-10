@@ -2,7 +2,18 @@
 
 Automatically encrypt and decrypt Laravel 5 Eloquent values
 
-This is inspired by Dtisgodsson's Laravel 4 "elocrypt" package, ported to Laravel 5.
+This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the
+following additions/changes:
+
+* Do the encryption at the setAttribute/getAttributeFromArray layer rather than __set and
+  __get as that's more appropriate for Laravel 5 with the new casts features.  So, for example,
+  you can add a field to $casts and also to $encryptable so that an array can be cast to a JSON
+  string first, and then encrypted.  It should also work for Lumen.
+
+* Prefix all encrypted values with a tag string (currently hard coded as __ELOCRYPT__: )
+  so that plain text data can be detected and handled correctly.  The task of writing a script
+  to traverse your existing database and update all plain text data to encrypted data is left
+  to the reader.
 
 # Installation
 
