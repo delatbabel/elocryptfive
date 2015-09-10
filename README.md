@@ -36,7 +36,7 @@ You must then run the following command:
 # Usage
 
 Simply reference the Elocrypt trait in any Eloquent Model you wish to apply encryption to and 
-then define an "encryptable" array on that model containing a list of the attributes you wish
+then define an `$encryptable` array on that model containing a list of the attributes you wish
 to Encrypt.
 
 For example:
