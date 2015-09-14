@@ -75,6 +75,31 @@ by Eloquent are overridden to include an additional step. This additional step s
 whether the attribute being set or get is included in the "encryptable" array on the model,
 and either encrypts/decrypts it accordingly.
 
+## Summary of Methods in Illuminate\Database\Eloquent\Model
+
+This surveys the major methods in the Laravel Model class as of
+Laravel v 5.1.12 and checks to see how those models set attributes
+and hence how they are affected by this trait.
+
+* constructor -- calls fill()
+* fill() -- calls setAttribute() which has been extended to encrypt the data.
+* hydrate() -- TBD
+* create() -- calls constructor and hence fill()
+* firstOrCreate -- calls constructor
+* firstOrNew -- calls constructor
+* updateOrCreate -- calls fill()
+* update() -- calls fill()
+* toArray() -- calls attributesToArray()
+* jsonSerialize() -- calls toArray()
+* toJson() -- calls toArray()
+* attributesToArray() -- calls getArrayableAttributes().
+* getAttribute -- calls getAttributeValue()
+* getAttributeValue -- calls getAttributeFromArray()
+* getAttributeFromArray -- calls getArrayableAttributes()
+* getArrayableAttributes -- has been extended here to decrypt the data.
+* setAttribute -- has been extended here to encrypt the data.
+* getAttributes -- has been extended here to decrypt the data.
+
 # Keys and IVs
 
 The key and encryption algorithm used are as per the Laravel Encrypter service, and defined in config/app.php
