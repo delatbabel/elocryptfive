@@ -31,16 +31,39 @@ use Illuminate\Support\Facades\Crypt;
  *   }
  * </code>
  *
+ * ### Summary of Methods in Illuminate\Database\Eloquent\Model
+ *
+ * This surveys the major methods in the Laravel Model class as of
+ * Laravel v 5.1.12 and checks to see how those models set attributes
+ * and hence how they are affected by this trait.
+ *
+ * * __construct -- calls fill()
+ * * fill() -- calls setAttribute() which has been overridden.
+ * * hydrate() -- TBD
+ * * create() -- calls constructor and hence fill()
+ * * firstOrCreate -- calls constructor
+ * * firstOrNew -- calls constructor
+ * * updateOrCreate -- calls fill()
+ * * update() -- calls fill()
+ * * toArray() -- calls attributesToArray()
+ * * jsonSerialize() -- calls toArray()
+ * * toJson() -- calls toArray()
+ * * attributesToArray() -- has been over-ridden here.
+ * * getAttribute -- calls getAttributeValue()
+ * * getAttributeValue -- calls getAttributeFromArray()
+ * * getAttributeFromArray -- calls getArrayableAttributes
+ * * getArrayableAttributes -- has been over-ridden here.
+ * * setAttribute -- has been over-ridden here.
+ *
  * @see  ...
  * @link ...
  */
 trait Elocrypt
 {
 
-    // TRAITS CAN'T HAVE CONSTANTS! GAH!
-    // const CRYPT_TAG = '__ELOCRYPT__:';
-
-    protected $elocrypt_prefix = '__ELOCRYPT__:';
+    protected function getElocryptPrefix() {
+        return '__ELOCRYPT__:';
+    }
 
     /**
      * Determine whether an attribute should be encrypted.
@@ -88,7 +111,7 @@ trait Elocrypt
         if ($this->hasEncrypt($key)) {
             $originalValue = $value;
             try {
-                $value = $this->elocrypt_prefix . Crypt::encrypt($value);
+                $value = $this->getElocryptPrefix() . Crypt::encrypt($value);
             } catch (EncryptException $e) {
                 // Reset
                 $value = $originalValue;
@@ -96,6 +119,42 @@ trait Elocrypt
         }
 
         $this->attributes[$key] = $value;
+    }
+
+    /**
+     * Decrypt an attribute if required
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function doDecryptAttribute($key, $value)
+    {
+        // Does it need to be decrypted?
+        if (! $this->hasEncrypt($key)) {
+            return $value;
+        }
+
+        // We now have the string version of the value stored in $value.
+        // Decrypt it, removing the prefix that we added when we encrypted it.
+        $originalValue = $value;
+        $elocrypt_prefix = $this->getElocryptPrefix();
+
+        if (strpos($value, $elocrypt_prefix) !== 0) {
+            // This string has not been prefixed and so we assume that
+            // it has not been encrypted.
+            return $originalValue;
+        }
+
+        $value = substr($value, strlen($elocrypt_prefix));
+        try {
+            $value = Crypt::decrypt($value);
+        } catch (DecryptException $e) {
+            // Reset
+            $value = $originalValue;
+        }
+
+        return $value;
     }
 
     /**
@@ -109,30 +168,23 @@ trait Elocrypt
         // This will call the base Laravel/Eloquent function to give
         // us the raw value taken from the attributes array.
         $value = parent::getAttributeFromArray($key);
+        return $this->doDecryptAttribute($key, $value);
+    }
 
-        // Does it need to be decrypted?
-        if (! $this->hasEncrypt($key)) {
-            return $value;
+    /**
+     * Get an attribute array of all arrayable attributes.
+     *
+     * @return array
+     */
+    protected function getArrayableAttributes()
+    {
+        $attributes = parent::getArrayableItems($this->attributes);
+
+        // Decrypt them all as required
+        foreach ($attributes as $key => $value) {
+            $attributes[$key] = $this->doDecryptAttribute($key, $value);
         }
 
-        // We now have the string version of the value stored in $value.
-        // Decrypt it, removing the prefix that we added when we encrypted it.
-        $originalValue = $value;
-
-        if (strpos($value, $this->elocrypt_prefix) !== 0) {
-            // This string has not been prefixed and so we assume that
-            // it has not been encrypted.
-            return $originalValue;
-        }
-
-        $value = substr($value, strlen($this->elocrypt_prefix));
-        try {
-            $value = $this->elocrypt_prefix . Crypt::decrypt($value);
-        } catch (DecryptException $e) {
-            // Reset
-            $value = $originalValue;
-        }
-
-        return $value;
+        return $attributes;
     }
 }
