@@ -54,9 +54,12 @@ use Illuminate\Support\Facades\Crypt;
  * * getAttributeFromArray -- calls getArrayableAttributes
  * * getArrayableAttributes -- has been over-ridden here.
  * * setAttribute -- has been over-ridden here.
+ * * getAttributes -- has been over-ridden here.
  *
- * @see  ...
- * @link ...
+ * @see Illuminate\Support\Facades\Crypt
+ * @see Illuminate\Contracts\Encryption\Encrypter
+ * @see Illuminate\Encryption\Encrypter
+ * @link http://laravel.com/docs/5.1/eloquent
  */
 trait Elocrypt
 {
@@ -179,6 +182,23 @@ trait Elocrypt
     protected function getArrayableAttributes()
     {
         $attributes = parent::getArrayableItems($this->attributes);
+
+        // Decrypt them all as required
+        foreach ($attributes as $key => $value) {
+            $attributes[$key] = $this->doDecryptAttribute($key, $value);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Get all of the current attributes on the model.
+     *
+     * @return array
+     */
+    public function getAttributes()
+    {
+        $attributes = parent::getAttributes();
 
         // Decrypt them all as required
         foreach ($attributes as $key => $value) {
