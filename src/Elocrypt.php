@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Crypt;
  *
  *       use Elocrypt;
  *
- *       public $encrypts = [
+ *       protected $encrypts = [
  *           'first_name',
  *           'last_name',
  *           'address_line_1',
@@ -89,7 +89,8 @@ trait Elocrypt
      */
     protected function encrypted($key, $value)
     {
-        // This string has not been prefixed so we assume it's not encrypted.
+        // This string has not been prefixed
+        // so we assume it's not encrypted.
         return $this->encryptable($key) && strpos($value, static::$ELOCRYPT_PREFIX) === 0;
     }
 
@@ -117,13 +118,8 @@ trait Elocrypt
     {
         if ( ! $this->encryptable($key)) return;
 
-        try {
-            // Prefix with a string so we know it's encrypted.
-            $this->attributes[$key] = static::$ELOCRYPT_PREFIX . Crypt::encrypt(
-                $this->attributes[$key]
-            );
-
-        } catch (EncryptException $e) {}
+        // Prefix so we can easily know it's encrypted.
+        $this->attributes[$key] = static::$ELOCRYPT_PREFIX . Crypt::encrypt($this->attributes[$key]);
     }
 
     /**
@@ -137,15 +133,8 @@ trait Elocrypt
     {
         if ( ! $this->encrypted($key, $value)) return $value;
 
-        try {
-            // Remove the prefix that we added when we encrypted it.
-            return Crypt::decrypt(
-                str_replace(static::$ELOCRYPT_PREFIX, '', $value)
-            );
-        }
-        catch (DecryptException $e) {}
-
-        return $value;
+        // Remove the prefix that we added when we encrypted it.
+        return Crypt::decrypt(str_replace(static::$ELOCRYPT_PREFIX, '', $value));
     }
 
     /**
@@ -170,22 +159,6 @@ trait Elocrypt
     }
 
     /**
-     * Map the decryption on an array of attributes
-     *
-     * @param  array $attributes
-     * @return array
-     */
-    protected function decryptAttributes($attributes)
-    {
-        // Decrypt them all as required
-        foreach ($attributes as $key => $value) {
-            $attributes[$key] = $this->decryptAttribute($key, $value);
-        }
-
-        return $attributes;
-    }
-
-    /**
      * Get all of the current attributes on the model.
      *
      * @return array
@@ -193,5 +166,21 @@ trait Elocrypt
     public function getAttributes()
     {
         return $this->decryptAttributes(parent::getAttributes());
+    }
+
+    /**
+     * Map the decryption on an array of attributes
+     *
+     * @param  array $attributes
+     * @return array
+     */
+    public function decryptAttributes($attributes)
+    {
+        // Decrypt them all as required
+        foreach ($attributes as $key => $value) {
+            $attributes[$key] = $this->decryptAttribute($key, $value);
+        }
+
+        return $attributes;
     }
 }
