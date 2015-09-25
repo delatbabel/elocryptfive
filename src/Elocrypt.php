@@ -23,10 +23,7 @@ use Illuminate\Support\Facades\Crypt;
  *       use Elocrypt;
  *
  *       protected $encrypts = [
- *           'first_name',
- *           'last_name',
- *           'address_line_1',
- *           'postcode'
+ *           'address_line_1', 'first_name', 'last_name', 'postcode'
  *       ];
  *   }
  * </code>
@@ -63,22 +60,9 @@ use Illuminate\Support\Facades\Crypt;
  */
 trait Elocrypt
 {
-    /**
-     * The elocrypt prefix
-     *
-     * @var string
-     */
-    protected static $ELOCRYPT_PREFIX = '__ELOCRYPT__:';
 
-    /**
-     * Determine whether an attribute should be encrypted.
-     *
-     * @param  string  $key
-     * @return bool
-     */
-    protected function encryptable($key)
-    {
-        return in_array($key, $this->encrypts);
+    protected function getElocryptPrefix() {
+        return '__ELOCRYPT__:';
     }
 
     /**
@@ -87,11 +71,11 @@ trait Elocrypt
      * @param  string  $key
      * @return bool
      */
-    protected function encrypted($key, $value)
+    protected function hasEncrypt($key)
     {
-        // This string has not been prefixed
-        // so we assume it's not encrypted.
-        return $this->encryptable($key) && strpos($value, static::$ELOCRYPT_PREFIX) === 0;
+        $array = isset($this->encrypts) ? $this->encrypts : $this->encryptable;
+
+        return in_array($key, $array);
     }
 
     /**
@@ -103,38 +87,76 @@ trait Elocrypt
      */
     public function setAttribute($key, $value)
     {
-        parent::setAttribute($key, $value);
+        // First we will check for the presence of a mutator for the set operation
+        // which simply lets the developers tweak the attribute as it is set on
+        // the model, such as "json_encoding" an listing of data for storage.
+        if ($this->hasSetMutator($key)) {
+            $method = 'set'.Str::studly($key).'Attribute';
 
-        $this->encryptAttribute($key);
+            return $this->{$method}($value);
+        }
+
+        // If an attribute is listed as a "date", we'll convert it from a DateTime
+        // instance into a form proper for storage on the database tables using
+        // the connection grammar's date format. We will auto set the values.
+        elseif (in_array($key, $this->getDates()) && $value) {
+            $value = $this->fromDateTime($value);
+        }
+
+        if ($this->isJsonCastable($key) && ! is_null($value)) {
+            $value = json_encode($value);
+        }
+
+        // We now have the string version of the value stored in $value.
+        // Does it need to be encrypted?  If so encrypt it, and prefix
+        // the string with a tag so we know it's been encrypted.
+        if ($this->hasEncrypt($key)) {
+            $originalValue = $value;
+            try {
+                $value = $this->getElocryptPrefix() . Crypt::encrypt($value);
+            } catch (EncryptException $e) {
+                // Reset
+                $value = $originalValue;
+            }
+        }
+
+        $this->attributes[$key] = $value;
     }
 
     /**
-     * Encrypt a stored attribute
-     *
-     * @param  string $key
-     * @return void
-     */
-    protected function encryptAttribute($key)
-    {
-        if ( ! $this->encryptable($key)) return;
-
-        // Prefix so we can easily know it's encrypted.
-        $this->attributes[$key] = static::$ELOCRYPT_PREFIX . Crypt::encrypt($this->attributes[$key]);
-    }
-
-    /**
-     * Decrypt an attribute if needed
+     * Decrypt an attribute if required
      *
      * @param string $key
      * @param mixed $value
      * @return mixed
      */
-    protected function decryptAttribute($key, $value)
+    protected function doDecryptAttribute($key, $value)
     {
-        if ( ! $this->encrypted($key, $value)) return $value;
+        // Does it need to be decrypted?
+        if (! $this->hasEncrypt($key)) {
+            return $value;
+        }
 
-        // Remove the prefix that we added when we encrypted it.
-        return Crypt::decrypt(str_replace(static::$ELOCRYPT_PREFIX, '', $value));
+        // We now have the string version of the value stored in $value.
+        // Decrypt it, removing the prefix that we added when we encrypted it.
+        $originalValue = $value;
+        $elocrypt_prefix = $this->getElocryptPrefix();
+
+        if (strpos($value, $elocrypt_prefix) !== 0) {
+            // This string has not been prefixed and so we assume that
+            // it has not been encrypted.
+            return $originalValue;
+        }
+
+        $value = substr($value, strlen($elocrypt_prefix));
+        try {
+            $value = Crypt::decrypt($value);
+        } catch (DecryptException $e) {
+            // Reset
+            $value = $originalValue;
+        }
+
+        return $value;
     }
 
     /**
@@ -145,7 +167,10 @@ trait Elocrypt
      */
     protected function getAttributeFromArray($key)
     {
-        return $this->decryptAttribute($key, parent::getAttributeFromArray($key));
+        // This will call the base Laravel/Eloquent function to give
+        // us the raw value taken from the attributes array.
+        $value = parent::getAttributeFromArray($key);
+        return $this->doDecryptAttribute($key, $value);
     }
 
     /**
@@ -155,7 +180,14 @@ trait Elocrypt
      */
     protected function getArrayableAttributes()
     {
-        return $this->decryptAttributes(parent::getArrayableAttributes());
+        $attributes = parent::getArrayableItems($this->attributes);
+
+        // Decrypt them all as required
+        foreach ($attributes as $key => $value) {
+            $attributes[$key] = $this->doDecryptAttribute($key, $value);
+        }
+
+        return $attributes;
     }
 
     /**
@@ -165,20 +197,11 @@ trait Elocrypt
      */
     public function getAttributes()
     {
-        return $this->decryptAttributes(parent::getAttributes());
-    }
+        $attributes = parent::getAttributes();
 
-    /**
-     * Map the decryption on an array of attributes
-     *
-     * @param  array $attributes
-     * @return array
-     */
-    public function decryptAttributes($attributes)
-    {
         // Decrypt them all as required
         foreach ($attributes as $key => $value) {
-            $attributes[$key] = $this->decryptAttribute($key, $value);
+            $attributes[$key] = $this->doDecryptAttribute($key, $value);
         }
 
         return $attributes;

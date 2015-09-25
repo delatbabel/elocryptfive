@@ -2,12 +2,11 @@
 
 Automatically encrypt and decrypt Laravel 5 Eloquent values
 
-This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the
-following additions/changes:
+This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the following additions/changes:
 
 * Do the encryption at the setAttribute/getAttributeFromArray layer rather than __set and
   __get as that's more appropriate for Laravel 5 with the new casts features.  So, for example,
-  you can add a field to $casts and also to $encrypts so that an array can be cast to a JSON
+  you can add a field to `$casts` and also to `$encrypts` so that an array can be cast to a JSON
   string first, and then encrypted.  It should also work for Lumen.
 
 * Prefix all encrypted values with a tag string (currently hard coded as `__ELOCRYPT__:` )
@@ -19,7 +18,7 @@ The original Laravel 4 package is here: https://github.com/dtisgodsson/elocrypt
 
 # Installation
 
-This package can be installed via Composer by adding the following to your composer.json file:
+This package can be installed via Composer by adding the following to your `composer.json` file:
 
 ```
     "require": {
@@ -51,7 +50,9 @@ For example:
          *
          * @var array
          */
-        protected $encrypts = ['first_name', 'last_name', 'address_line_1', 'postcode'];
+        protected $encrypts = [
+            'address_line_1', 'first_name', 'last_name', 'postcode'
+        ];
     }
 ```
 
@@ -106,7 +107,7 @@ and hence how they are affected by this trait.
 
 # Keys and IVs
 
-The key and encryption algorithm used are as per the Laravel Encrypter service, and defined in config/app.php
+The key and encryption algorithm used are as per the Laravel Encrypter service, and defined in `config/app.php`
 as follows:
 
 ```php
