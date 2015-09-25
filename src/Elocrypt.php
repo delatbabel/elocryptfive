@@ -22,11 +22,8 @@ use Illuminate\Support\Facades\Crypt;
  *
  *       use Elocrypt;
  *
- *       public $encryptable = [
- *           'first_name',
- *           'last_name',
- *           'address_line_1',
- *           'postcode'
+ *       protected $encrypts = [
+ *           'address_line_1', 'first_name', 'last_name', 'postcode'
  *       ];
  *   }
  * </code>
@@ -76,7 +73,9 @@ trait Elocrypt
      */
     protected function hasEncrypt($key)
     {
-        return in_array($key, $this->encryptable);
+        $array = isset($this->encrypts) ? $this->encrypts : $this->encryptable;
+
+        return in_array($key, $array);
     }
 
     /**

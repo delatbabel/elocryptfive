@@ -2,12 +2,11 @@
 
 Automatically encrypt and decrypt Laravel 5 Eloquent values
 
-This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the
-following additions/changes:
+This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the following additions/changes:
 
 * Do the encryption at the setAttribute/getAttributeFromArray layer rather than __set and
   __get as that's more appropriate for Laravel 5 with the new casts features.  So, for example,
-  you can add a field to $casts and also to $encryptable so that an array can be cast to a JSON
+  you can add a field to `$casts` and also to `$encrypts` so that an array can be cast to a JSON
   string first, and then encrypted.  It should also work for Lumen.
 
 * Prefix all encrypted values with a tag string (currently hard coded as `__ELOCRYPT__:` )
@@ -19,7 +18,7 @@ The original Laravel 4 package is here: https://github.com/dtisgodsson/elocrypt
 
 # Installation
 
-This package can be installed via Composer by adding the following to your composer.json file:
+This package can be installed via Composer by adding the following to your `composer.json` file:
 
 ```
     "require": {
@@ -35,9 +34,29 @@ You must then run the following command:
 
 # Usage
 
-Simply reference the Elocrypt trait in any Eloquent Model you wish to apply encryption to and 
-then define an `$encryptable` array on that model containing a list of the attributes you wish
-to Encrypt.
+Simply reference the Elocrypt trait in any Eloquent Model you wish to apply encryption to and define an `$encrypts` array containing a list of the attributes to encrypt.
+
+For example:
+
+```php
+    use Delatbabel\Elocrypt\Elocrypt;
+
+    class User extends Eloquent {
+
+        use Elocrypt;
+       
+        /**
+         * The attributes that should be encrypted on save.
+         *
+         * @var array
+         */
+        protected $encrypts = [
+            'address_line_1', 'first_name', 'last_name', 'postcode'
+        ];
+    }
+```
+
+You can combine `$casts` and `$encrypts` to store encrypted arrays.  An array will first be converted to JSON and then encrypted.
 
 For example:
 
@@ -48,23 +67,9 @@ For example:
 
         use Elocrypt;
 
-        public $encryptable = ['first_name', 'last_name', 'address_line_1', 'postcode'];
-    }
-```
+        protected $casts = ['extended_data' => 'array'];
 
-You can combine `$casts` and `$encryptable` to store encrypted arrays.  An array will first be
-converted to JSON and then encrypted.  For example:
-
-```php
-    use Delatbabel\Elocrypt\Elocrypt;
-
-    class User extends Eloquent {
-
-        use Elocrypt;
-
-        public $casts = ['extended_data' => 'array'];
-
-        public $encryptable = ['extended_data'];
+        protected $encrypts = ['extended_data'];
     }
 ```
 
@@ -72,7 +77,7 @@ converted to JSON and then encrypted.  For example:
 
 By including the Elocrypt trait, the setAttribute() and getAttributeFromArray() methods provided
 by Eloquent are overridden to include an additional step. This additional step simply checks
-whether the attribute being set or get is included in the "encryptable" array on the model,
+whether the attribute being set or get is included in the `$encrypts` array on the model,
 and either encrypts/decrypts it accordingly.
 
 ## Summary of Methods in Illuminate\Database\Eloquent\Model
@@ -102,7 +107,7 @@ and hence how they are affected by this trait.
 
 # Keys and IVs
 
-The key and encryption algorithm used are as per the Laravel Encrypter service, and defined in config/app.php
+The key and encryption algorithm used are as per the Laravel Encrypter service, and defined in `config/app.php`
 as follows:
 
 ```php
