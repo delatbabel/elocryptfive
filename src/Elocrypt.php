@@ -106,6 +106,34 @@ trait Elocrypt
     }
 
     /**
+     * Return the encrypted value of an attribute's value.
+     *
+     * This has been exposed as a public method because it is of some
+     * use when searching.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function encryptedAttribute($value)
+    {
+        return self::$ELOCRYPT_PREFIX . Crypt::encrypt($value);
+    }
+
+    /**
+     * Return the decrypted value of an attribute's encrypted value.
+     *
+     * This has been exposed as a public method because it is of some
+     * use when searching.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function decryptedAttribute($value)
+    {
+        return Crypt::decrypt(str_replace(self::$ELOCRYPT_PREFIX, '', $value));
+    }
+
+    /**
      * Encrypt a stored attribute.
      *
      * @param  string $key
@@ -115,8 +143,9 @@ trait Elocrypt
     {
         if ($this->shouldEncrypt($key) && ! $this->isEncrypted($this->attributes[$key])) {
             try {
-                $this->attributes[$key] = self::$ELOCRYPT_PREFIX . Crypt::encrypt($this->attributes[$key]);
-            } catch (EncryptException $e) {}
+                $this->attributes[$key] = $this->encryptedAttribute($this->attributes[$key]);
+            } catch (EncryptException $e) {
+            }
         }
     }
 
@@ -131,8 +160,9 @@ trait Elocrypt
     {
         if ($this->shouldEncrypt($key) && $this->isEncrypted($value)) {
             try {
-                return Crypt::decrypt(str_replace(self::$ELOCRYPT_PREFIX, '', $value));
-            } catch (DecryptException $e) {}
+                return $this->decryptedAttribute($value);
+            } catch (DecryptException $e) {
+            }
         }
 
         return $value;
