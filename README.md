@@ -22,7 +22,7 @@ This package can be installed via Composer by adding the following to your `comp
 
 ```
     "require": {
-        "delatbabel/elocryptfive": "dev-master"
+        "delatbabel/elocryptfive": "~1.0"
     }
 ```
 
