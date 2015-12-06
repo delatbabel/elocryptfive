@@ -1,11 +1,28 @@
 # Eloquent Encryption/Decryption for Laravel 5
 
-Automatically encrypt and decrypt Laravel 5 Eloquent values
+Automatically encrypt and decrypt Laravel 5 Eloquent values.
 
-This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the following additions/changes:
+## What Does This Do?
 
-* Do the encryption at the setAttribute/getAttributeFromArray layer rather than __set and
-  __get as that's more appropriate for Laravel 5 with the new casts features.  So, for example,
+This encrypts and decrypts columns stored in database tables in Laravel applications
+transparently, by encrypting data as it is stored in the model attributes and decrypting
+data as it is recalled from the model attributes.
+
+All data that is encrypted is prefixed with a tag (currently `__ELOCRYPT__;`) so that
+encrypted data can be easily identified.
+
+This supports columns that store either encrypted or non-encrypted data to make migration
+easier.  Data can be read from columns correctly regardless of whether it is encrypted or
+not but will be automatically encrypted when it is saved back into those columns.
+
+## Contributors
+
+This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the
+following additions/changes:
+
+* Do the encryption in separate functions (encryptedAttribute and decryptedAttribute rather than
+  inside __set and  __get, and call those from setAttribute and getAttribute as that's more
+  appropriate for Laravel 5 with the new casts features.  So, for example,
   you can add a field to `$casts` and also to `$encrypts` so that an array can be cast to a JSON
   string first, and then encrypted.  It should also work for Lumen.
 
@@ -13,10 +30,12 @@ This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I ha
   so that plain text data can be detected and handled correctly.  The task of writing a script
   to traverse your existing database and update all plain text data to encrypted data is left
   to the reader.
-  
+
 The original Laravel 4 package is here: https://github.com/dtisgodsson/elocrypt
 
-# Installation
+Thanks to Brandon Surowiec for some extensive refactoring of the internal methods.
+
+## Installation
 
 This package can be installed via Composer by adding the following to your `composer.json` file:
 
@@ -32,9 +51,10 @@ You must then run the following command:
     composer update
 ```
 
-# Usage
+## Usage
 
-Simply reference the Elocrypt trait in any Eloquent Model you wish to apply encryption to and define an `$encrypts` array containing a list of the attributes to encrypt.
+Simply reference the Elocrypt trait in any Eloquent Model you wish to apply encryption to and define
+an `$encrypts` array containing a list of the attributes to encrypt.
 
 For example:
 
@@ -56,7 +76,8 @@ For example:
     }
 ```
 
-You can combine `$casts` and `$encrypts` to store encrypted arrays.  An array will first be converted to JSON and then encrypted.
+You can combine `$casts` and `$encrypts` to store encrypted arrays.  An array will first be converted to JSON
+and then encrypted.
 
 For example:
 
@@ -73,14 +94,14 @@ For example:
     }
 ```
 
-# How it Works?
+## How it Works?
 
 By including the Elocrypt trait, the setAttribute() and getAttributeFromArray() methods provided
 by Eloquent are overridden to include an additional step. This additional step simply checks
 whether the attribute being set or get is included in the `$encrypts` array on the model,
 and either encrypts/decrypts it accordingly.
 
-## Summary of Methods in Illuminate\Database\Eloquent\Model
+### Summary of Methods in Illuminate\Database\Eloquent\Model
 
 This surveys the major methods in the Laravel Model class as of
 Laravel v 5.1.12 and checks to see how those models set attributes
@@ -105,7 +126,7 @@ and hence how they are affected by this trait.
 * setAttribute -- has been extended here to encrypt the data.
 * getAttributes -- has been extended here to decrypt the data.
 
-# Keys and IVs
+## Keys and IVs
 
 The key and encryption algorithm used are as per the Laravel Encrypter service, and defined in `config/app.php`
 as follows:
