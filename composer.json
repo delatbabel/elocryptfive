@@ -2,6 +2,7 @@
     "name": "delatbabel/elocryptfive",
     "description": "Automatically encrypt and decrypt Eloquent attributes with ease.",
     "keywords": ["encrypt", "elocrypt", "eloquent", "l5", "laravel", "laravel5", "encryption", "eloquent encryption", "laravel5 encryption", "laravel5 aes", "eloquent aes"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Del",
