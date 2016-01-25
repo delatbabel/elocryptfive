@@ -6,7 +6,7 @@
 # (c) Del 2015 http://www.babel.com.au/
 #
 
-APPNAME='ElocryptFive API Documentation'
+APPNAME='ElocryptFive'
 CMDFILE=apigen.cmd.$$
 DESTDIR=./documents
 
