@@ -6,3 +6,7 @@
 .directory
 .idea
 composer.lock
+/documents
+dirlist.app
+dirlist.cache
+dirlist.vendor

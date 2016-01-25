@@ -60,12 +60,12 @@ use Illuminate\Support\Facades\Crypt;
  */
 trait Elocrypt
 {
-    /**
-     * The prefix used to determine if a string is encrypted.
-     *
-     * @var string
-     */
-    private static $ELOCRYPT_PREFIX = '__ELOCRYPT__:';
+    /** @var string The prefix used to determine if a string is encrypted. */
+    protected static $ELOCRYPT_PREFIX = '__ELOCRYPT__:';
+
+    //
+    // Methods below here are native to the trait.
+    //
 
     /**
      * Determine whether an attribute should be encrypted.
@@ -89,20 +89,6 @@ trait Elocrypt
     protected function isEncrypted($value)
     {
         return strpos((string)$value, self::$ELOCRYPT_PREFIX) === 0;
-    }
-
-    /**
-     * Set a given attribute on the model.
-     *
-     * @param  string  $key
-     * @param  mixed   $value
-     * @return void
-     */
-    public function setAttribute($key, $value)
-    {
-        parent::setAttribute($key, $value);
-
-        $this->doEncryptAttribute($key);
     }
 
     /**
@@ -181,6 +167,25 @@ trait Elocrypt
         }
 
         return $attributes;
+    }
+
+    //
+    // Methods below here override methods within the base Laravel/Illuminate/Eloquent
+    // model class and may need adjusting for later releases of Laravel.
+    //
+
+    /**
+     * Set a given attribute on the model.
+     *
+     * @param  string  $key
+     * @param  mixed   $value
+     * @return void
+     */
+    public function setAttribute($key, $value)
+    {
+        parent::setAttribute($key, $value);
+
+        $this->doEncryptAttribute($key);
     }
 
     /**
