@@ -2,6 +2,16 @@
 
 Automatically encrypt and decrypt Laravel 5 Eloquent values.
 
+## READ THIS FIRST
+
+Encrypted values are usually longer than plain text values.  Sometimes much longer.  You
+may find that the column widths in your database tables need to be extended to store the
+encrypted values.
+
+If you are encrypting long strings such as JSON blobs then the encrypted values may be
+longer than a VARCHAR field can support, and you may need to extend your column types to
+TEXT or LONGTEXT.
+
 ## What Does This Do?
 
 This encrypts and decrypts columns stored in database tables in Laravel applications
