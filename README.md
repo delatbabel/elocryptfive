@@ -104,14 +104,14 @@ For example:
     }
 ```
 
-## How it Works?
+# How it Works?
 
 By including the Elocrypt trait, the setAttribute() and getAttributeFromArray() methods provided
 by Eloquent are overridden to include an additional step. This additional step simply checks
 whether the attribute being set or get is included in the `$encrypts` array on the model,
 and either encrypts/decrypts it accordingly.
 
-### Summary of Methods in Illuminate\Database\Eloquent\Model
+## Summary of Methods in Illuminate\Database\Eloquent\Model
 
 This surveys the major methods in the Laravel Model class as of
 Laravel v 5.1.12 and checks to see how those models set attributes
@@ -151,3 +151,38 @@ I recommend generating a random 32 character string for the encryption key, and 
 for encrypting data.  If you are encrypting long data strings then AES-256-CBC-HMAC-SHA1 will be better.
 
 The IV for encryption is randomly generated.
+
+# FAQ
+
+## Manually Encrypting Data
+
+You can manually encrypt or decrypt data using the `encryptedAttribute()` and `decryptedAttribute()` functions.
+An example is as follows:
+
+```php
+    $user = new User();
+    $encryptedEmail = $user->encryptedAttribute(Input::get("email"));
+```
+
+## Encryption and Authentication
+
+If you have an authentication table where you encrypt the user data including the login data (for example the email),
+this will prevent Auth::attempt from working.  For example this code will not work:
+
+```php
+    $auth = Auth::attempt(array(
+                "email"     =>  Input::get("email"),
+                "password"  =>  Input::get("password"),
+    ), $remember);
+```
+
+Even comparing the encrypted email will not work, because it would require a fixed IV which introduces
+security issues.
+
+What you will need to do instead is to hash the email address using a well known hash function (e.g.
+SHA256 or RIPE-MD160) rather than encrypt it, and then in the Auth::attempt function you can compare
+the hashes.
+
+If you need access to the email address then you could store both a hashed and an encrypted email
+address, use the hashed value for authentication and retrieve the encrypted value for other uses
+(e.g. sending emails).
