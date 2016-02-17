@@ -164,7 +164,23 @@ An example is as follows:
     $encryptedEmail = $user->encryptedAttribute(Input::get("email"));
 ```
 
+## Encryption and Searching
+
+You will not be able to search on encrypted data, because it is encrypted.  Comparing encrypted values
+would require a fixed IV which introduces security issues.
+
+If you need to search on data then either:
+
+* Leave it unencrypted, or
+* Hash the data and search on the hash instead of the encrypted value.  Use a well known hash algorithm
+  such as SHA256.
+
+You could store both a hashed and an encrypted value, use the hashed value for searching and retrieve
+the encrypted value for other uses.
+
 ## Encryption and Authentication
+
+The same problem with searching applies for authentication because authentication requires a user search.
 
 If you have an authentication table where you encrypt the user data including the login data (for example the email),
 this will prevent Auth::attempt from working.  For example this code will not work:
@@ -176,8 +192,8 @@ this will prevent Auth::attempt from working.  For example this code will not wo
     ), $remember);
 ```
 
-Even comparing the encrypted email will not work, because it would require a fixed IV which introduces
-security issues.
+As for searching, comparing the encrypted email will not work, because it would require a fixed IV
+which introduces security issues.
 
 What you will need to do instead is to hash the email address using a well known hash function (e.g.
 SHA256 or RIPE-MD160) rather than encrypt it, and then in the Auth::attempt function you can compare
