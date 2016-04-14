@@ -2,6 +2,6 @@
 
 return [
 
-	'prefix' => env('ELOCRYPT_PREFIX', '__ELOCRYPT__:')
+		'prefix' => env('ELOCRYPT_PREFIX', '__ELOCRYPT__:')
 
 ];

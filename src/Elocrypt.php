@@ -66,11 +66,12 @@ trait Elocrypt
     //
 
     /**
-     * Get the configuration setting for the prefix used to determine if a strign is encrypted
+     * Get the configuration setting for the prefix used to determine if a string is encrypted
      *
      * @return string
      */
-    protected function getElocryptPrefix() {
+    protected function getElocryptPrefix()
+    {
         return Config::get('elocrypt.prefix');
     }
 
