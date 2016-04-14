@@ -6,6 +6,8 @@
  */
 
 use Illuminate\Encryption\Encrypter;
+use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * Class DummyModel
@@ -25,6 +27,13 @@ class DummyModel extends BaseModel
     public function __construct(array $attributes)
     {
         $this->encrypter = new Encrypter('088409730f085dd15e8e3a7d429dd185', 'AES-256-CBC');
+
+        $app = new Container();
+        $app->singleton('app', 'Illuminate\Container\Container');
+        $app->singleton('config', 'Illuminate\Config\Repository');
+        $app['config']->set('elocrypt.prefix', '__ELOCRYPT__:');
+        Facade::setFacadeApplication($app);
+
         parent::__construct($attributes);
     }
 
@@ -39,7 +48,7 @@ class DummyModel extends BaseModel
      */
     public function encryptedAttribute($value)
     {
-        return self::$ELOCRYPT_PREFIX . $this->encrypter->encrypt($value);
+        return $this->getElocryptPrefix() . $this->encrypter->encrypt($value);
     }
 
     /**
@@ -53,6 +62,6 @@ class DummyModel extends BaseModel
      */
     public function decryptedAttribute($value)
     {
-        return $this->encrypter->decrypt(str_replace(self::$ELOCRYPT_PREFIX, '', $value));
+        return $this->encrypter->decrypt(str_replace($this->getElocryptPrefix(), '', $value));
     }
 }

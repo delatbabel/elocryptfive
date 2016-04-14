@@ -7,6 +7,7 @@ namespace Delatbabel\Elocrypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\EncryptException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Trait Elocrypt
@@ -60,12 +61,18 @@ use Illuminate\Support\Facades\Crypt;
  */
 trait Elocrypt
 {
-    /** @var string The prefix used to determine if a string is encrypted. */
-    protected static $ELOCRYPT_PREFIX = '__ELOCRYPT__:';
-
     //
     // Methods below here are native to the trait.
     //
+
+    /**
+     * Get the configuration setting for the prefix used to determine if a strign is encrypted
+     *
+     * @return string
+     */
+    protected function getElocryptPrefix() {
+        return Config::get('elocrypt.prefix');
+    }
 
     /**
      * Determine whether an attribute should be encrypted.
@@ -88,7 +95,7 @@ trait Elocrypt
      */
     protected function isEncrypted($value)
     {
-        return strpos((string)$value, self::$ELOCRYPT_PREFIX) === 0;
+        return strpos((string)$value, $this->getElocryptPrefix()) === 0;
     }
 
     /**
@@ -102,7 +109,7 @@ trait Elocrypt
      */
     public function encryptedAttribute($value)
     {
-        return self::$ELOCRYPT_PREFIX . Crypt::encrypt($value);
+        return $this->getElocryptPrefix() . Crypt::encrypt($value);
     }
 
     /**
@@ -116,7 +123,7 @@ trait Elocrypt
      */
     public function decryptedAttribute($value)
     {
-        return Crypt::decrypt(str_replace(self::$ELOCRYPT_PREFIX, '', $value));
+        return Crypt::decrypt(str_replace($this->getElocryptPrefix(), '', $value));
     }
 
     /**

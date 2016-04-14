@@ -18,7 +18,7 @@ This encrypts and decrypts columns stored in database tables in Laravel applicat
 transparently, by encrypting data as it is stored in the model attributes and decrypting
 data as it is recalled from the model attributes.
 
-All data that is encrypted is prefixed with a tag (currently `__ELOCRYPT__;`) so that
+All data that is encrypted is prefixed with a tag (default `__ELOCRYPT__:`) so that
 encrypted data can be easily identified.
 
 This supports columns that store either encrypted or non-encrypted data to make migration
@@ -36,10 +36,9 @@ following additions/changes:
   you can add a field to `$casts` and also to `$encrypts` so that an array can be cast to a JSON
   string first, and then encrypted.  It should also work for Lumen.
 
-* Prefix all encrypted values with a tag string (currently hard coded as `__ELOCRYPT__:` )
-  so that plain text data can be detected and handled correctly.  The task of writing a script
-  to traverse your existing database and update all plain text data to encrypted data is left
-  to the reader.
+* Prefix all encrypted values with a tag string (default `__ELOCRYPT__:` ) so that plain text
+  data can be detected and handled correctly.  The task of writing a script to traverse your
+  existing database and update all plain text data to encrypted data is left to the reader.
 
 The original Laravel 4 package is here: https://github.com/dtisgodsson/elocrypt
 
@@ -60,6 +59,31 @@ You must then run the following command:
 ```
     composer update
 ```
+
+## Configuration
+
+Publish the config file with:
+
+```
+    php artisan config::publish delatbabel/elocryptfive
+```
+
+You may then change the default prefix tag string in your `.env` config file:
+
+```
+    ELOCRYPT_PREFIX=__This_is_encrypted_data__
+```
+
+or alternatively you can change the default right in the `config/elocrypt.php` file:
+
+```php
+    return [
+
+        'prefix' => env('ELOCRYPT_PREFIX', '__This_is_encrypted_data__')
+
+    ]
+```
+
 
 ## Usage
 
