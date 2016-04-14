@@ -6,8 +6,8 @@ namespace Delatbabel\Elocrypt;
 
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\EncryptException;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * Trait Elocrypt
