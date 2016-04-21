@@ -72,7 +72,7 @@ trait Elocrypt
      */
     protected function getElocryptPrefix()
     {
-        return Config::get('elocrypt.prefix');
+        return Config::has('elocrypt.prefix') ? Config::get('elocrypt.prefix') : '__ELOCRYPT__:';
     }
 
     /**
