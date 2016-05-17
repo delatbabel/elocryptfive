@@ -20,6 +20,7 @@
         "illuminate/encryption": "^5.0",
         "illuminate/container": "^5.0",
         "illuminate/config": "^5.0",
+        "illuminate/console": "^5.0",
         "paragonie/random_compat": "^1.1"
     },
     "require-dev": {
