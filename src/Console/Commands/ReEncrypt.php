@@ -170,11 +170,12 @@ class ReEncrypt extends Command
             // Get count of records
             $count = DB::table($table_name)
                 ->count();
-            $count = number_format($count, 0, '.', ',');
-            $this->comment('Found ' . $count . ' records in DB. Checking encryption keys.');
 
             // Create a progress bar
             $bar = $this->output->createProgressBar($count);
+
+            $count = number_format($count, 0, '.', ',');
+            $this->comment('Found ' . $count . ' records in DB. Checking encryption keys.');
 
             // Get a table object
             $table_data = DB::table($table_name);
