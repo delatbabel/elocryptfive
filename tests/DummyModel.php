@@ -1,16 +1,15 @@
 <?php
 /**
- * Class DummyModel
+ * Class DummyModel.
  *
  * @author del
  */
-
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Container\Container;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * Class DummyModel
+ * Class DummyModel.
  *
  * Dummy model class to be used for testing.
  */
@@ -21,7 +20,7 @@ class DummyModel extends BaseModel
     /** @var array list of attributes to encrypt */
     protected $encrypts = ['encrypt_me'];
 
-    /** @var  Encrypter */
+    /** @var Encrypter */
     protected $encrypter;
 
     public function __construct(array $attributes)
@@ -44,11 +43,12 @@ class DummyModel extends BaseModel
      * use when searching.
      *
      * @param string $value
+     *
      * @return string
      */
     public function encryptedAttribute($value)
     {
-        return $this->getElocryptPrefix() . $this->encrypter->encrypt($value);
+        return $this->getElocryptPrefix().$this->encrypter->encrypt($value);
     }
 
     /**
@@ -58,6 +58,7 @@ class DummyModel extends BaseModel
      * use when searching.
      *
      * @param string $value
+     *
      * @return string
      */
     public function decryptedAttribute($value)

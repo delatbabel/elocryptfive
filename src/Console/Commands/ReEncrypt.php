@@ -1,10 +1,9 @@
 <?php
 /**
- * Class ReEncrypt
+ * Class ReEncrypt.
  *
  * @author del
  */
-
 namespace Delatbabel\Elocrypt\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class ReEncrypt
+ * Class ReEncrypt.
  *
  * This console job locates data in the database that contains data encrypted
  * using a wrong/deprecated encryption key, and re-encrypts it using the correct/
@@ -56,7 +55,7 @@ class ReEncrypt extends Command
      *
      * @var array
      */
-    protected $old_keys = array();
+    protected $old_keys = [];
 
     /**
      * The new encryption key.
@@ -70,10 +69,10 @@ class ReEncrypt extends Command
      *
      * @var array
      */
-    protected $tables = array();
+    protected $tables = [];
 
     /**
-     * Get the configuration setting for the prefix used to determine if a string is encrypted
+     * Get the configuration setting for the prefix used to determine if a string is encrypted.
      *
      * @return string
      */
@@ -85,31 +84,34 @@ class ReEncrypt extends Command
     /**
      * Determine whether a string has already been encrypted.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return bool
      */
     protected function isEncrypted($value)
     {
-        return strpos((string)$value, $this->getElocryptPrefix()) === 0;
+        return strpos((string) $value, $this->getElocryptPrefix()) === 0;
     }
 
     /**
      * Return the encrypted value of an attribute's value.
      *
-     * @param string $value
+     * @param string    $value
      * @param Encrypter $cipher
+     *
      * @return string
      */
     public function encryptedAttribute($value, $cipher)
     {
-        return $this->getElocryptPrefix() . $cipher->encrypt($value);
+        return $this->getElocryptPrefix().$cipher->encrypt($value);
     }
 
     /**
      * Return the decrypted value of an attribute's encrypted value.
      *
-     * @param string $value
+     * @param string    $value
      * @param Encrypter $cipher
+     *
      * @return string
      */
     public function decryptedAttribute($value, $cipher)
@@ -118,7 +120,7 @@ class ReEncrypt extends Command
     }
 
     /**
-     * Set up keys
+     * Set up keys.
      *
      * @return void
      */
@@ -175,7 +177,7 @@ class ReEncrypt extends Command
             $bar = $this->output->createProgressBar($count);
 
             $count = number_format($count, 0, '.', ',');
-            $this->comment('Found ' . $count . ' records in DB. Checking encryption keys.');
+            $this->comment('Found '.$count.' records in DB. Checking encryption keys.');
 
             // Get a table object
             $table_data = DB::table($table_name);
@@ -190,7 +192,7 @@ class ReEncrypt extends Command
                     // encrypted then try to decrypt it with the base encrypter.
                     $adjust = [];
                     foreach ($datum_array as $key => $value) {
-                        if (! $this->isEncrypted($value)) {
+                        if (!$this->isEncrypted($value)) {
                             continue;
                         }
 
@@ -219,8 +221,8 @@ class ReEncrypt extends Command
 
                             // If we got a match then we will have something in $new_value
                             if (empty($new_value)) {
-                                Log::error(__CLASS__ . ':' . __TRAIT__ . ':' . __FILE__ . ':' . __LINE__ . ':' . __FUNCTION__ . ':' .
-                                    "Unable to find an encryption key to match for ${table_name}.${key} ID " . $datum->id
+                                Log::error(__CLASS__.':'.__TRAIT__.':'.__FILE__.':'.__LINE__.':'.__FUNCTION__.':'.
+                                    "Unable to find an encryption key to match for ${table_name}.${key} ID ".$datum->id
                                 );
                                 continue;
                             }

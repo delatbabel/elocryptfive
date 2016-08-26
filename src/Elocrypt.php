@@ -1,6 +1,6 @@
 <?php
 /**
- * Trait Elocrypt
+ * Trait Elocrypt.
  */
 namespace Delatbabel\Elocrypt;
 
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 
 /**
- * Trait Elocrypt
+ * Trait Elocrypt.
  *
  * Automatically encrypt and decrypt Laravel 5 Eloquent values
  *
@@ -66,7 +66,7 @@ trait Elocrypt
     //
 
     /**
-     * Get the configuration setting for the prefix used to determine if a string is encrypted
+     * Get the configuration setting for the prefix used to determine if a string is encrypted.
      *
      * @return string
      */
@@ -78,7 +78,8 @@ trait Elocrypt
     /**
      * Determine whether an attribute should be encrypted.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return bool
      */
     protected function shouldEncrypt($key)
@@ -91,12 +92,13 @@ trait Elocrypt
     /**
      * Determine whether a string has already been encrypted.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return bool
      */
     protected function isEncrypted($value)
     {
-        return strpos((string)$value, $this->getElocryptPrefix()) === 0;
+        return strpos((string) $value, $this->getElocryptPrefix()) === 0;
     }
 
     /**
@@ -106,11 +108,12 @@ trait Elocrypt
      * use when searching.
      *
      * @param string $value
+     *
      * @return string
      */
     public function encryptedAttribute($value)
     {
-        return $this->getElocryptPrefix() . Crypt::encrypt($value);
+        return $this->getElocryptPrefix().Crypt::encrypt($value);
     }
 
     /**
@@ -120,6 +123,7 @@ trait Elocrypt
      * use when searching.
      *
      * @param string $value
+     *
      * @return string
      */
     public function decryptedAttribute($value)
@@ -130,12 +134,13 @@ trait Elocrypt
     /**
      * Encrypt a stored attribute.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return void
      */
     protected function doEncryptAttribute($key)
     {
-        if ($this->shouldEncrypt($key) && ! $this->isEncrypted($this->attributes[$key])) {
+        if ($this->shouldEncrypt($key) && !$this->isEncrypted($this->attributes[$key])) {
             try {
                 $this->attributes[$key] = $this->encryptedAttribute($this->attributes[$key]);
             } catch (EncryptException $e) {
@@ -147,7 +152,8 @@ trait Elocrypt
      * Decrypt an attribute if required.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return mixed
      */
     protected function doDecryptAttribute($key, $value)
@@ -165,7 +171,8 @@ trait Elocrypt
     /**
      * Decrypt each attribute in the array as required.
      *
-     * @param  array $attributes
+     * @param array $attributes
+     *
      * @return array
      */
     public function doDecryptAttributes($attributes)
@@ -185,8 +192,9 @@ trait Elocrypt
     /**
      * Set a given attribute on the model.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     public function setAttribute($key, $value)
@@ -199,7 +207,8 @@ trait Elocrypt
     /**
      * Get an attribute from the $attributes array.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return mixed
      */
     protected function getAttributeFromArray($key)

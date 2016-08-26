@@ -1,12 +1,12 @@
 <?php
 /**
- * Class BaseModel
+ * Class BaseModel.
  *
  * @author del
  */
 
 /**
- * Class BaseModel
+ * Class BaseModel.
  *
  * Abstract base model class to be used for testing.
  */
@@ -22,7 +22,7 @@ abstract class BaseModel implements \Illuminate\Contracts\Support\Arrayable
     /**
      * Create a new model instance.
      *
-     * @param  array  $attributes
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -32,7 +32,8 @@ abstract class BaseModel implements \Illuminate\Contracts\Support\Arrayable
     /**
      * Fill the model with an array of attributes.
      *
-     * @param  array  $attributes
+     * @param array $attributes
+     *
      * @return $this
      */
     public function fill(array $attributes)
@@ -57,13 +58,15 @@ abstract class BaseModel implements \Illuminate\Contracts\Support\Arrayable
     /**
      * Set a given attribute on the model.
      *
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return $this
      */
     public function setAttribute($key, $value)
     {
         $this->attributes[$key] = $value;
+
         return $this;
     }
 
@@ -80,7 +83,8 @@ abstract class BaseModel implements \Illuminate\Contracts\Support\Arrayable
     /**
      * Get an attribute from the $attributes array.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return mixed
      */
     protected function getAttributeFromArray($key)
@@ -88,7 +92,6 @@ abstract class BaseModel implements \Illuminate\Contracts\Support\Arrayable
         if (array_key_exists($key, $this->attributes)) {
             return $this->attributes[$key];
         }
-        return null;
     }
 
     /**

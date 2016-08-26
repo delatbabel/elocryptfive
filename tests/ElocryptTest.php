@@ -1,12 +1,12 @@
 <?php
 /**
- * Class ElocryptTest
+ * Class ElocryptTest.
  *
  * @author del
  */
 
 /**
- * Class ElocryptTest
+ * Class ElocryptTest.
  *
  * Test case for ElocryptFive
  */
@@ -26,14 +26,15 @@ class ElocryptTest extends PHPUnit_Framework_TestCase
     {
         $this->doTest([
             'dont_encrypt' => '12345',
-            'encrypt_me'   => 'abcde'
+            'encrypt_me'   => 'abcde',
         ]);
     }
 
-    public function testEncryptStringWithPlus() {
+    public function testEncryptStringWithPlus()
+    {
         $this->doTest([
             'dont_encrypt'  => '12345+12345@gmail.com',
-            'encrypt_me'    => 'abcde+12345@gmail.com'
+            'encrypt_me'    => 'abcde+12345@gmail.com',
         ]);
     }
 }
