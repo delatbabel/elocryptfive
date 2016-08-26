@@ -113,7 +113,7 @@ trait Elocrypt
      */
     public function encryptedAttribute($value)
     {
-        return $this->getElocryptPrefix().Crypt::encrypt($value);
+        return $this->getElocryptPrefix() . Crypt::encrypt($value);
     }
 
     /**

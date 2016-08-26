@@ -103,7 +103,7 @@ class ReEncrypt extends Command
      */
     public function encryptedAttribute($value, $cipher)
     {
-        return $this->getElocryptPrefix().$cipher->encrypt($value);
+        return $this->getElocryptPrefix() . $cipher->encrypt($value);
     }
 
     /**
@@ -159,9 +159,9 @@ class ReEncrypt extends Command
         }
 
         // Make some encrypter objects
-        $cipher = Config::get('app.cipher');
+        $cipher        = Config::get('app.cipher');
         $baseEncrypter = new Encrypter($this->new_key, $cipher);
-        $oldEncrypter = [];
+        $oldEncrypter  = [];
         foreach ($this->old_keys as $key => $value) {
             $oldEncrypter[$key] = new Encrypter($value, $cipher);
         }
@@ -177,7 +177,7 @@ class ReEncrypt extends Command
             $bar = $this->output->createProgressBar($count);
 
             $count = number_format($count, 0, '.', ',');
-            $this->comment('Found '.$count.' records in DB. Checking encryption keys.');
+            $this->comment('Found ' . $count . ' records in DB. Checking encryption keys.');
 
             // Get a table object
             $table_data = DB::table($table_name);
@@ -221,8 +221,8 @@ class ReEncrypt extends Command
 
                             // If we got a match then we will have something in $new_value
                             if (empty($new_value)) {
-                                Log::error(__CLASS__.':'.__TRAIT__.':'.__FILE__.':'.__LINE__.':'.__FUNCTION__.':'.
-                                    "Unable to find an encryption key to match for ${table_name}.${key} ID ".$datum->id
+                                Log::error(__CLASS__ . ':' . __TRAIT__ . ':' . __FILE__ . ':' . __LINE__ . ':' . __FUNCTION__ . ':' .
+                                    "Unable to find an encryption key to match for ${table_name}.${key} ID " . $datum->id
                                 );
                                 continue;
                             }
