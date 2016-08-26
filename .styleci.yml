@@ -6,7 +6,6 @@ linting: true
 
 enabled:
   - short_array_syntax
-  - strict
   - align_double_arrow
   - binary_operator_spaces
   - no_empty_statement
