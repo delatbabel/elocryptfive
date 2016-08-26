@@ -65,7 +65,7 @@ You must then run the following command:
 Publish the config file with:
 
 ```
-    php artisan config::publish delatbabel/elocryptfive
+    php artisan vendor:publish --provider=Delatbabel\Elocrypt\ElocryptServiceProvider
 ```
 
 You may then change the default prefix tag string in your `.env` config file:
