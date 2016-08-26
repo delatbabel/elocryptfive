@@ -140,7 +140,7 @@ trait Elocrypt
      */
     protected function doEncryptAttribute($key)
     {
-        if ($this->shouldEncrypt($key) && !$this->isEncrypted($this->attributes[$key])) {
+        if ($this->shouldEncrypt($key) && ! $this->isEncrypted($this->attributes[$key])) {
             try {
                 $this->attributes[$key] = $this->encryptedAttribute($this->attributes[$key]);
             } catch (EncryptException $e) {

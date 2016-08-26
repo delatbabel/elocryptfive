@@ -192,7 +192,7 @@ class ReEncrypt extends Command
                     // encrypted then try to decrypt it with the base encrypter.
                     $adjust = [];
                     foreach ($datum_array as $key => $value) {
-                        if (!$this->isEncrypted($value)) {
+                        if (! $this->isEncrypted($value)) {
                             continue;
                         }
 
