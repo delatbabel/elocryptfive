@@ -1,5 +1,10 @@
 # Eloquent Encryption/Decryption for Laravel 5
 
+[![Build Status](https://travis-ci.org/delatbabel/elocryptfive.png?branch=master)](https://travis-ci.org/delatbabel/elocryptfive)
+[![StyleCI](https://styleci.io/repos/42222272/shield)](https://styleci.io/repos/42222272)
+[![Latest Stable Version](https://poser.pugx.org/delatbabel/elocryptfive/version.png)](https://packagist.org/packages/ddpro/elocryptfive)
+[![Total Downloads](https://poser.pugx.org/delatbabel/elocryptfive/d/total.png)](https://packagist.org/packages/delatbabel/elocryptfive)
+
 Automatically encrypt and decrypt Laravel 5 Eloquent values.
 
 ## READ THIS FIRST
