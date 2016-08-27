@@ -30,6 +30,12 @@ This supports columns that store either encrypted or non-encrypted data to make 
 easier.  Data can be read from columns correctly regardless of whether it is encrypted or
 not but will be automatically encrypted when it is saved back into those columns.
 
+## Requirements and Recommendations
+
+* Laravel 5.1 LTS (untested on 5.2 and later versions)
+* PHP > 5.6.0 (need the `hash_equals()` function which was added in PHP 5.6)
+* PHP [openssl extension](http://php.net/manual/en/book.openssl.php).
+
 ## Contributors
 
 This is Darren Taylor's Laravel 4 "elocrypt" package, ported to Laravel 5.  I have made the
