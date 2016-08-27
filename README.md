@@ -65,6 +65,17 @@ You must then run the following command:
     composer update
 ```
 
+Once `composer update` has finished, then add the service provider to the `providers` array in your
+application's `config/app.php` file:
+
+```php
+    'providers' => [
+        ...
+        Delatbabel\Elocrypt\ElocryptServiceProvider::class,
+    ],
+```
+
+
 ## Configuration
 
 Publish the config file with:
@@ -83,12 +94,9 @@ or alternatively you can change the default right in the `config/elocrypt.php` f
 
 ```php
     return [
-
         'prefix' => env('ELOCRYPT_PREFIX', '__This_is_encrypted_data__')
-
     ]
 ```
-
 
 ## Usage
 
