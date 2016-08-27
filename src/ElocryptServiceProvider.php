@@ -18,7 +18,7 @@ class ElocryptServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config' => config_path()
+            __DIR__ . '/../config/elocrypt.php' => config_path('elocrypt.php'),
         ], 'config');
     }
 
