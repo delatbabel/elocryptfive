@@ -35,6 +35,7 @@ not but will be automatically encrypted when it is saved back into those columns
 * Laravel 5.1 LTS (untested on 5.2 and later versions)
 * PHP > 5.6.0 (need the `hash_equals()` function which was added in PHP 5.6)
 * PHP [openssl extension](http://php.net/manual/en/book.openssl.php).
+* A working OpenSSL implementation on your OS.  OpenSSL comes pre-built with most Linux distributions and other forms of Unix such as *BSD.  There may or may not be a working OpenSSL implementation on a Windows system depending on how your LA?P stack was built.  I cannot offer support for installing or using ElocryptFive on systems that do not have an OpenSSL library.
 
 ## Contributors
 
@@ -87,7 +88,7 @@ application's `config/app.php` file:
 Publish the config file with:
 
 ```
-    php artisan vendor:publish --provider=Delatbabel\Elocrypt\ElocryptServiceProvider
+    php artisan vendor:publish --provider='Delatbabel\Elocrypt\ElocryptServiceProvider'
 ```
 
 You may then change the default prefix tag string in your `.env` config file:
