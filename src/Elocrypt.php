@@ -229,10 +229,12 @@ trait Elocrypt
     /**
      * Get all of the current attributes on the model.
      *
+     * @param array $keys
+     *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes($keys = [])
     {
-        return $this->doDecryptAttributes(parent::getAttributes());
+        return $this->doDecryptAttributes(parent::getAttributes($keys));
     }
 }
