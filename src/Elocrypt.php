@@ -227,12 +227,18 @@ trait Elocrypt
     }
 
     /**
-     * Get all of the current attributes on the model.
-     *
      * @return array
      */
-    public function getAttributes()
+    public function getDirty(): array
     {
-        return $this->doDecryptAttributes(parent::getAttributes());
+        $dirty = [];
+
+        foreach ($this->attributes as $key => $value) {
+            if (! $this->originalIsEquivalent($key, $value)) {
+                $dirty[$key] = $value;
+            }
+        }
+
+        return $dirty;
     }
 }
