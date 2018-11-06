@@ -81,6 +81,17 @@ abstract class BaseModel implements \Illuminate\Contracts\Support\Arrayable
     }
 
     /**
+     * Get an attribute from the model.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function getAttribute($key)
+    {
+        return $this->attributes[$key];
+    }
+
+    /**
      * Get an attribute from the $attributes array.
      *
      * @param string $key

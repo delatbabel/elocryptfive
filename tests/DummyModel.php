@@ -23,6 +23,9 @@ class DummyModel extends BaseModel
     /** @var Encrypter */
     protected $encrypter;
 
+    /** @var bool indicates if the modal exists in the database or not yet */
+    public $exists = false;
+
     public function __construct(array $attributes)
     {
         $this->encrypter = new Encrypter('088409730f085dd15e8e3a7d429dd185', 'AES-256-CBC');
@@ -65,4 +68,5 @@ class DummyModel extends BaseModel
     {
         return $this->encrypter->decrypt(str_replace($this->getElocryptPrefix(), '', $value));
     }
+
 }
