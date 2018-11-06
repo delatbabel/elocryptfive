@@ -15,11 +15,12 @@ class ElocryptTest extends PHPUnit_Framework_TestCase
     protected function doTest($attributes)
     {
         $model = new DummyModel($attributes);
+
         $model_attributes = $model->getAttributes();
 
-        $this->assertEquals($attributes['dont_encrypt'], $model->attributes['dont_encrypt']);
-        $this->assertStringStartsWith('__ELOCRYPT__:', $model->attributes['encrypt_me']);
-        $this->assertEquals($attributes['encrypt_me'], $model_attributes['encrypt_me']);
+        $this->assertEquals($attributes['dont_encrypt'], $model_attributes['dont_encrypt']);
+        $this->assertStringStartsWith('__ELOCRYPT__:', $model_attributes['encrypt_me']);
+        $this->assertEquals($attributes['encrypt_me'], $model->getAttribute('encrypt_me'));
     }
 
     public function testEncryptNormalString()
@@ -37,4 +38,5 @@ class ElocryptTest extends PHPUnit_Framework_TestCase
             'encrypt_me'    => 'abcde+12345@gmail.com',
         ]);
     }
+
 }

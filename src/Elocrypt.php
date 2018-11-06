@@ -136,7 +136,7 @@ trait Elocrypt
      *
      * @param string $key
      *
-     * @return void
+     * @return string the encrypted attribute (if encryption is required)
      */
     protected function doEncryptAttribute($key)
     {
@@ -146,6 +146,8 @@ trait Elocrypt
             } catch (EncryptException $e) {
             }
         }
+
+        return $this->attributes[$key];
     }
 
     /**
@@ -190,6 +192,28 @@ trait Elocrypt
     //
 
     /**
+     * Get the attributes that have been changed since last sync.
+     * Data must be obtained encrypted, because it is the same data that will be stored in the database
+     *
+     * @return array
+     */
+    public function getDirty()
+    {
+        $dirty = [];
+
+        foreach ($this->getAttributes(false) as $key => $value) {
+
+            $value = $this->doEncryptAttribute($key);
+
+            if (! $this->originalIsEquivalent($key, $value)) {
+                $dirty[$key] = $value;
+            }
+        }
+
+        return $dirty;
+    }
+
+    /**
      * Set a given attribute on the model.
      *
      * @param string $key
@@ -231,8 +255,38 @@ trait Elocrypt
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes($shouldDecrypt = true)
     {
-        return $this->doDecryptAttributes(parent::getAttributes());
+        // If the model doesn't exists yet, the attributes should never be decrypted or they will be
+        // stored in the DB as plaintext. If an attribute is accessed directly, it will still be decrypted
+        // by the getAttribute($key) method
+
+        return $this->exists && $shouldDecrypt ?
+            $this->doDecryptAttributes(parent::getAttributes()) :
+            parent::getAttributes();
+    }
+
+    /**
+     * Get an attribute from the model.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function getAttribute($key)
+    {
+        return $this->doDecryptAttribute($key, parent::getAttribute($key));
+    }
+
+    /**
+     * Cast an attribute to a native PHP type.
+     * Decrypt encrypted data before it is processed by cast attribute
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return mixed
+     */
+    protected function castAttribute($key, $value)
+    {
+        return parent::castAttribute($key, $this->doDecryptAttribute($key, $value));
     }
 }
